@@ -9,38 +9,38 @@
 # Скільки коштує: NLB погодинно плюс публічна адреса в кожній з трьох зон —
 # орієнтовно $0.04 на годину, близько $30 на місяць, якщо забути.
 # ---------------------------------------------------------------------------
-apiVersion: v1
-kind: Service
-metadata:
-  name: web-public
-  annotations:
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: web-public
+#  annotations:
     # За замовчуванням контролер створює ВНУТРІШНІЙ балансувальник —
     # доступний лише зсередини VPC. Для входу з інтернету — явно:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+#    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
     # Куди NLB шле трафік:
     #   instance — на порт вузла (NodePort), далі kube-proxy веде до пода;
     #   ip       — одразу на адресу пода. Можливо, бо з VPC CNI под має
     #              справжню адресу з VPC. На один стрибок менше.
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+#    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
 
     # Перевірка здоров'я цілей тим самим /healthz, що й readinessProbe.
     # Без цього NLB перевіряв би лише, чи відкритий TCP-порт.
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /healthz
-spec:
-  type: LoadBalancer
+#    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: http
+#    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /healthz
+#spec:
+#  type: LoadBalancer
 
   # ХТО обслуговує цей сервіс. Клас service.k8s.aws/nlb належить
   # AWS Load Balancer Controller. Без цього поля сервіс підхопив би
   # старий вбудований контролер і створив застарілий Classic Load Balancer.
   # Поле незмінне: після створення сервісу поміняти клас не можна.
-  loadBalancerClass: service.k8s.aws/nlb
+#  loadBalancerClass: service.k8s.aws/nlb
 
-  selector:
-    app: web
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-      protocol: TCP
+#  selector:
+#    app: web
+#  ports:
+#    - name: http
+#      port: 80
+#      targetPort: 80
+#      protocol: TCP
